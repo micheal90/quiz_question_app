@@ -22,7 +22,7 @@ class AnswerOption extends StatelessWidget {
     return GetBuilder<QuizController>(
       init: Get.find<QuizController>(),
       builder: (controller) => InkWell(
-          onTap: controller.checkIsQuestAnswer(questionId) ? null : onPressed,
+          onTap: controller.checkIsQuestionAnswered(questionId) ? null : onPressed,
           child: Container(
             width: double.infinity,
            
@@ -46,7 +46,7 @@ class AnswerOption extends StatelessWidget {
                           ),
                         ]),
                   ),
-                  if (controller.checkIsQuestAnswer(questionId) &&
+                  if (controller.checkIsQuestionAnswered(questionId) &&
                       controller.selectAnswer == index)
                     Container(
                         width: 30,

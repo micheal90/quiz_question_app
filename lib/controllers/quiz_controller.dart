@@ -40,31 +40,45 @@ class QuizController extends GetxController with SingleGetTickerProviderMixin {
       options: ['Cin', 'Count>>', 'Cout', 'Output>>'],
     ),
   ];
+
   List<QuestionModel> get questionsList => [..._questionsList];
   bool _isPressed = false;
-  bool get isPressed => _isPressed;
+  bool get isPressed => _isPressed; //To check if the answer is pressed
   double _numberOfQuestion = 1;
   double get numberOfQuestion => _numberOfQuestion;
   int? _selectAnswer;
   int? get selectAnswer => _selectAnswer;
   int? _correctAnswer;
-  // int? get correctAnswer => _correctAnswer;
   int _countOfCorrectAnswers = 0;
   int get countOfCorrectAnswers => _countOfCorrectAnswers;
 
-  double get scoreResult {
-    return _countOfCorrectAnswers * 100 / _questionsList.length;
-  }
-
+  //map for check if the question has been answered
   final Map<int, bool> _questionIsAnswerd = {};
-  var isFirstAnswer = true;
-  //controller
+  //page view controller
   late PageController pageController;
   //timer
   Timer? _timer;
   final maxSec = 15;
   final RxInt _sec = 15.obs;
   RxInt get sec => _sec;
+
+  @override
+  void onInit() {
+    pageController = PageController(initialPage: 0);
+    resetAnswer();
+    super.onInit();
+  }
+
+  @override
+  void onClose() {
+    pageController.dispose();
+    super.onClose();
+  }
+
+  //get final score
+  double get scoreResult {
+    return _countOfCorrectAnswers * 100 / _questionsList.length;
+  }
 
   void checkAnswer(QuestionModel questionModel, int selectAnswer) {
     _isPressed = true;
@@ -81,12 +95,40 @@ class QuizController extends GetxController with SingleGetTickerProviderMixin {
     update();
   }
 
-  bool checkIsQuestAnswer(int quesId) {
+  //check if the question has been answered
+  bool checkIsQuestionAnswered(int quesId) {
     return _questionIsAnswerd.entries
         .firstWhere((element) => element.key == quesId)
         .value;
   }
 
+  void nextQuestion() {
+    if (_timer != null || _timer!.isActive) {
+      stopTimer();
+    }
+
+    if (pageController.page == _questionsList.length - 1) {
+      Get.offAndToNamed(ResultScreen.routeName);
+    } else {
+      _isPressed = false;
+      pageController.nextPage(
+          duration: const Duration(milliseconds: 500), curve: Curves.linear);
+
+      startTimer();
+    }
+    _numberOfQuestion = pageController.page! + 2;
+    update();
+  }
+
+  //called when start again quiz
+  void resetAnswer() {
+    for (var element in _questionsList) {
+      _questionIsAnswerd.addAll({element.id: false});
+    }
+    update();
+  }
+
+  //get right and wrong color
   Color getColor(int answerIndex) {
     if (_isPressed) {
       if (answerIndex == _correctAnswer) {
@@ -99,6 +141,7 @@ class QuizController extends GetxController with SingleGetTickerProviderMixin {
     return Colors.white;
   }
 
+  //het right and wrong icon
   IconData getIcon(int answerIndex) {
     if (_isPressed) {
       if (answerIndex == _correctAnswer) {
@@ -126,50 +169,12 @@ class QuizController extends GetxController with SingleGetTickerProviderMixin {
   void resetTimer() => _sec.value = maxSec;
 
   void stopTimer() => _timer!.cancel();
-
-  void nextQuestion() {
-    if (_timer != null || _timer!.isActive) {
-      stopTimer();
-    }
-
-    if (pageController.page == _questionsList.length - 1) {
-      Get.offAndToNamed(ResultScreen.routeName);
-    } else {
-      _isPressed = false;
-      pageController.nextPage(
-          duration: const Duration(milliseconds: 500), curve: Curves.linear);
-
-      startTimer();
-    }
-    _numberOfQuestion = pageController.page! + 2;
-    update();
-  }
-
+  //call when start again quiz
   void startAgain() {
     _correctAnswer = null;
     _countOfCorrectAnswers = 0;
     resetAnswer();
     _selectAnswer = null;
     Get.offAllNamed(WelcomeScreen.routeName);
-  }
-
-  void resetAnswer() {
-    for (var element in _questionsList) {
-      _questionIsAnswerd.addAll({element.id: false});
-    }
-    update();
-  }
-
-  @override
-  void onInit() {
-    pageController = PageController(initialPage: 0);
-    resetAnswer();
-    super.onInit();
-  }
-
-  @override
-  void onClose() {
-    pageController.dispose();
-    super.onClose();
   }
 }
