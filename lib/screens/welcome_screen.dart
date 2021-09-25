@@ -35,82 +35,86 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        resizeToAvoidBottomInset: false,
+       extendBody: true,
         body: Container(
-      decoration: const BoxDecoration(
-        image: DecorationImage(
-            image: AssetImage('assets/images/welcome.jpg'), fit: BoxFit.cover),
-      ),
-      child: Stack(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(15.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Spacer(
-                  flex: 2,
-                ),
-                Text(
-                  'Let\'s start Quiz,',
-                  style: Theme.of(context).textTheme.headline3,
-                ),
-                Text(
-                  'Enter your name to start',
-                  style: Theme.of(context)
-                      .textTheme
-                      .headline6!
-                      .copyWith(color: Colors.white),
-                ),
-                const Spacer(
-                  flex: 1,
-                ),
-                Form(
-                  key: _formkey,
-                  child: GetBuilder<QuizController>(
-                    init: Get.find<QuizController>(),
-                    builder: (controller) => TextFormField(
-                      controller: _nameController,
-                      style: const TextStyle(color: Colors.white),
-                      decoration: const InputDecoration(
-                          labelText: 'Full Name',
-                          labelStyle: TextStyle(color: Colors.white),
-                          border: OutlineInputBorder(
-                              borderSide: BorderSide(width: 3),
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(15.0)))),
-                      validator: (String? val) {
-                        if (val!.isEmpty) {
-                          return 'Name should not be empty';
-                        } else {
-                          return null;
-                        }
-                      },
-                      onSaved: (String? val) {
-                        controller.name = val!.trim().toUpperCase();
-                      },
-                      onFieldSubmitted: (_) => _submit(context),
+          constraints: BoxConstraints.expand(),
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+                image: AssetImage('assets/images/welcome.jpg'),
+                fit: BoxFit.cover),
+          ),
+          child: Stack(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Spacer(
+                      flex: 2,
                     ),
-                  ),
+                    Text(
+                      'Let\'s start Quiz,',
+                      style: Theme.of(context).textTheme.headline3,
+                    ),
+                    Text(
+                      'Enter your name to start',
+                      style: Theme.of(context)
+                          .textTheme
+                          .headline6!
+                          .copyWith(color: Colors.white),
+                    ),
+                    const Spacer(
+                      flex: 1,
+                    ),
+                    Form(
+                      key: _formkey,
+                      child: GetBuilder<QuizController>(
+                        init: Get.find<QuizController>(),
+                        builder: (controller) => TextFormField(
+                          controller: _nameController,
+                          style: const TextStyle(color: Colors.white),
+                          decoration: const InputDecoration(
+                              labelText: 'Full Name',
+                              labelStyle: TextStyle(color: Colors.white),
+                              border: OutlineInputBorder(
+                                  borderSide: BorderSide(width: 3),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(15.0)))),
+                          validator: (String? val) {
+                            if (val!.isEmpty) {
+                              return 'Name should not be empty';
+                            } else {
+                              return null;
+                            }
+                          },
+                          onSaved: (String? val) {
+                            controller.name = val!.trim().toUpperCase();
+                          },
+                          onFieldSubmitted: (_) => _submit(context),
+                        ),
+                      ),
+                    ),
+                    const Spacer(
+                      flex: 1,
+                    ),
+                    Align(
+                      alignment: Alignment.center,
+                      child: CustomButton(
+                          width: double.infinity,
+                          onPressed: () => _submit(context),
+                          text: 'Lets Start Quiz'),
+                    ),
+                    const Spacer(
+                      flex: 2,
+                    ),
+                  ],
                 ),
-                const Spacer(
-                  flex: 1,
-                ),
-                Align(
-                  alignment: Alignment.center,
-                  child: CustomButton(
-                      width: double.infinity,
-                      onPressed: () => _submit(context),
-                      text: 'Lets Start Quiz'),
-                ),
-                const Spacer(
-                  flex: 2,
-                ),
-              ],
-            ),
-          )
-        ],
-      ),
-    ));
+              )
+            ],
+          ),
+        ));
   }
 }
