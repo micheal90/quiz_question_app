@@ -1,6 +1,7 @@
 # quiz_question_app
 
-A new Flutter project.
+Quiz app with Getx
+
 ## ScreenShots
 ![Slide2](https://user-images.githubusercontent.com/26098900/134786156-b41c05ff-9737-441c-bcbe-6882ccaad33d.PNG)
 ![Slide3](https://user-images.githubusercontent.com/26098900/134786157-6a99ab57-4fa1-4799-8f1e-099fd3a339a6.PNG)
